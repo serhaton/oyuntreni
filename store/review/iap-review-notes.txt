@@ -1,0 +1,24 @@
+Product: com.oyuntreni.app.premium ("Full Version"), Non-Consumable, one-time purchase (no subscription).
+
+WHAT IT UNLOCKS
+Play Train / Oyun Treni is a learning game for children aged 4+. Without the purchase, children can play letters A–F (capital and small; in Turkish A B C Ç D E F) and numbers 1–10. The purchase unlocks all remaining content:
+• the whole alphabet, capital and small (English 26 letters, Turkish 29 letters)
+• all numbers up to 20, plus 50, 100 and 1000
+• all Animal sound and Vehicle quizzes
+• every new station added in future updates
+Unlocking is permanent and immediate; locked stations open as soon as the purchase completes.
+
+HOW TO FIND THE PURCHASE (it is always behind a parent gate)
+Option A: On the home screen tap the green Play button, then tap any station with a padlock (for example the letter G, the number 11, or the Animals or Vehicles card). A padlock screen appears and a voice says "This station is locked. Ask a grown-up to open it!". Tap "For grown-ups" at the bottom, solve the parent gate, and the purchase panel shown in the screenshot appears with "Buy" and "Restore purchase".
+Option B: On the home screen tap the gear button (top-right), solve the parent gate, and find the "Full version" section with "Buy" and "Restore purchase".
+
+PARENT GATE
+A random addition with a two-digit answer (for example 7 + 6 = 13) is shown. Enter both digits on the keypad. A wrong answer shows a new question. The question is never read aloud, so young children who cannot read cannot pass it.
+
+RESTORE
+"Restore purchase" is available in the purchase panel and in Settings → Full version. After restoring, all stations unlock immediately.
+
+NOTES
+• No account or login is needed; purchases use the device's Apple Account through StoreKit.
+• The price on the Buy button comes from the App Store (the screenshot was taken in a development environment, where no price is shown).
+• The unlocked state is stored on the device so the game keeps working offline.
