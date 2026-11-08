@@ -1,0 +1,31 @@
+import type { LetterEntry } from './types';
+
+/** English alphabet (26 letters), in order, with example words. */
+export const LETTERS_EN: LetterEntry[] = [
+  { upper: 'A', lower: 'a', word: 'Ant', passenger: 'ant' },
+  { upper: 'B', lower: 'b', word: 'Bear', passenger: 'bear' },
+  { upper: 'C', lower: 'c', word: 'Cat', passenger: 'cat' },
+  { upper: 'D', lower: 'd', word: 'Duck', passenger: 'duck' },
+  { upper: 'E', lower: 'e', word: 'Elephant', passenger: 'elephant' },
+  { upper: 'F', lower: 'f', word: 'Frog', passenger: 'frog' },
+  { upper: 'G', lower: 'g', word: 'Giraffe', passenger: 'giraffe' },
+  { upper: 'H', lower: 'h', word: 'Horse', passenger: 'horse' },
+  { upper: 'I', lower: 'i', word: 'Iguana', passenger: 'iguana' },
+  { upper: 'J', lower: 'j', word: 'Jellyfish', passenger: 'jellyfish' },
+  { upper: 'K', lower: 'k', word: 'Kangaroo', passenger: 'kangaroo' },
+  { upper: 'L', lower: 'l', word: 'Lion', passenger: 'lion' },
+  { upper: 'M', lower: 'm', word: 'Monkey', passenger: 'monkey' },
+  { upper: 'N', lower: 'n', word: 'Narwhal', passenger: 'narwhal' },
+  { upper: 'O', lower: 'o', word: 'Octopus', passenger: 'octopus' },
+  { upper: 'P', lower: 'p', word: 'Penguin', passenger: 'penguin' },
+  { upper: 'Q', lower: 'q', word: 'Queen', passenger: 'queen' },
+  { upper: 'R', lower: 'r', word: 'Rabbit', passenger: 'rabbit' },
+  { upper: 'S', lower: 's', word: 'Sheep', passenger: 'sheep' },
+  { upper: 'T', lower: 't', word: 'Tiger', passenger: 'tiger' },
+  { upper: 'U', lower: 'u', word: 'Unicorn', passenger: 'unicorn' },
+  { upper: 'V', lower: 'v', word: 'Van', passenger: 'van' },
+  { upper: 'W', lower: 'w', word: 'Whale', passenger: 'whale' },
+  { upper: 'X', lower: 'x', word: 'Xylophone', passenger: 'xylophone' },
+  { upper: 'Y', lower: 'y', word: 'Yo-yo', passenger: 'yoyo' },
+  { upper: 'Z', lower: 'z', word: 'Zebra', passenger: 'zebra' },
+];

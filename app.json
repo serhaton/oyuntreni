@@ -1,0 +1,61 @@
+{
+  "expo": {
+    "name": "Oyun Treni",
+    "slug": "oyun-treni",
+    "scheme": "oyuntreni",
+    "version": "1.0.0",
+    "orientation": "landscape",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "platforms": [
+      "ios"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "requireFullScreen": true,
+      "bundleIdentifier": "com.oyuntreni.app",
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true
+      }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false
+        }
+      ],
+      [
+        "expo-localization",
+        {
+          "supportedLocales": [
+            "tr",
+            "en"
+          ]
+        }
+      ],
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "backgroundColor": "#4FC3F7"
+        }
+      ],
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "LANDSCAPE"
+        }
+      ],
+      "expo-asset",
+      "expo-iap"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

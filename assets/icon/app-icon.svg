@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Oyun Treni app icon (source). Regenerate the PNGs with: npm run icon:generate -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#29B6F6"/>
+      <stop offset="1" stop-color="#B3E5FC"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#sky)"/>
+
+  <!-- Sun -->
+  <circle cx="190" cy="190" r="150" fill="#FFF59D" opacity="0.55"/>
+  <circle cx="190" cy="190" r="105" fill="#FFD54F"/>
+
+  <!-- Clouds -->
+  <g fill="#FFFFFF">
+    <ellipse cx="760" cy="215" rx="150" ry="58"/>
+    <circle cx="710" cy="200" r="62"/>
+    <circle cx="800" cy="175" r="78"/>
+  </g>
+
+  <!-- Hills and ground -->
+  <path d="M0 690 Q 260 520 520 690 Q 780 540 1024 670 L1024 1024 L0 1024 Z" fill="#A5D6A7"/>
+  <path d="M0 780 Q 300 690 600 780 Q 820 720 1024 770 L1024 1024 L0 1024 Z" fill="#9CCC65"/>
+  <rect x="0" y="850" width="1024" height="174" fill="#66BB6A"/>
+
+  <!-- Track -->
+  <rect x="0" y="900" width="1024" height="34" fill="#D7CCC8"/>
+  <g fill="#8D6E63">
+    <rect x="30" y="893" width="56" height="44" rx="10"/><rect x="150" y="893" width="56" height="44" rx="10"/>
+    <rect x="270" y="893" width="56" height="44" rx="10"/><rect x="390" y="893" width="56" height="44" rx="10"/>
+    <rect x="510" y="893" width="56" height="44" rx="10"/><rect x="630" y="893" width="56" height="44" rx="10"/>
+    <rect x="750" y="893" width="56" height="44" rx="10"/><rect x="870" y="893" width="56" height="44" rx="10"/>
+  </g>
+  <rect x="0" y="882" width="1024" height="20" fill="#90A4AE"/>
+
+  <!-- Smoke -->
+  <g fill="#FFFFFF">
+    <circle cx="700" cy="330" r="46" opacity="0.95"/>
+    <circle cx="630" cy="250" r="62" opacity="0.85"/>
+    <circle cx="540" cy="185" r="78" opacity="0.7"/>
+  </g>
+
+  <!-- Locomotive -->
+  <rect x="150" y="760" width="700" height="70" rx="26" fill="#4E342E"/>
+  <path d="M845 640 L960 840 L830 840 Z" fill="#FFD54F" stroke="#FFD54F" stroke-width="18" stroke-linejoin="round"/>
+  <path d="M655 520 L755 520 L775 380 L635 380 Z" fill="#4E342E"/>
+  <rect x="615" y="352" width="180" height="50" rx="20" fill="#4E342E"/>
+  <circle cx="520" cy="530" r="52" fill="#FFD54F"/>
+  <rect x="420" y="520" width="440" height="250" rx="110" fill="#42A5F5"/>
+  <rect x="520" y="520" width="30" height="250" fill="#FFD54F"/>
+  <rect x="760" y="520" width="30" height="250" fill="#FFD54F"/>
+  <circle cx="865" cy="610" r="44" fill="#FFF59D"/>
+  <rect x="160" y="420" width="300" height="350" rx="40" fill="#EF5350"/>
+  <rect x="130" y="370" width="360" height="72" rx="36" fill="#FFD54F"/>
+  <rect x="215" y="480" width="190" height="140" rx="34" fill="#B3E5FC"/>
+
+  <!-- Face on the boiler -->
+  <circle cx="575" cy="672" r="26" fill="#FF8AC6" opacity="0.7"/>
+  <circle cx="755" cy="672" r="26" fill="#FF8AC6" opacity="0.7"/>
+  <ellipse cx="615" cy="620" rx="22" ry="28" fill="#3D2C5E"/>
+  <ellipse cx="715" cy="620" rx="22" ry="28" fill="#3D2C5E"/>
+  <circle cx="623" cy="608" r="9" fill="#FFFFFF"/>
+  <circle cx="723" cy="608" r="9" fill="#FFFFFF"/>
+  <path d="M630 670 Q 665 715 700 670" fill="none" stroke="#3D2C5E" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- Wheels -->
+  <g>
+    <circle cx="270" cy="830" r="88" fill="#4E342E"/><circle cx="270" cy="830" r="70" fill="#EF5350"/><circle cx="270" cy="830" r="20" fill="#4E342E"/>
+    <circle cx="500" cy="830" r="88" fill="#4E342E"/><circle cx="500" cy="830" r="70" fill="#EF5350"/><circle cx="500" cy="830" r="20" fill="#4E342E"/>
+    <circle cx="745" cy="852" r="60" fill="#4E342E"/><circle cx="745" cy="852" r="46" fill="#EF5350"/><circle cx="745" cy="852" r="15" fill="#4E342E"/>
+  </g>
+  <rect x="270" y="822" width="230" height="18" rx="9" fill="#78909C"/>
+</svg>
