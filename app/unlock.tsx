@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, {
@@ -36,7 +36,9 @@ export default function UnlockScreen() {
   const { t } = useTranslation();
   const say = useSay();
   const { safe, s, height: H, content } = useDeviceLayout();
-  const [step, setStep] = useState<Step>('child');
+  // Dev only: `/unlock?step=buy` skips straight to the purchase panel (to preview it).
+  const { step: devStep } = useLocalSearchParams<{ step?: string }>();
+  const [step, setStep] = useState<Step>(__DEV__ && devStep === 'buy' ? 'buy' : 'child');
 
   useEffect(() => {
     audio.playSfx('softTryAgain');

@@ -15,6 +15,7 @@ const FEATURES: TranslationKey[] = [
   'premium.featureNumbers',
   'premium.featureQuizzes',
   'premium.featureFuture',
+  'premium.featureOneTime',
 ];
 
 /**
