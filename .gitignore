@@ -40,3 +40,6 @@ yarn-error.*
 /ios
 /android
 glyph-preview.svg
+
+# local Xcode archives / IPA builds
+/build

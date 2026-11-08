@@ -14,8 +14,11 @@
       "supportsTablet": true,
       "requireFullScreen": true,
       "bundleIdentifier": "com.oyuntreni.app",
+      "buildNumber": "1",
+      "appleTeamId": "UL2V6DD422",
       "infoPlist": {
-        "CFBundleAllowMixedLocalizations": true
+        "CFBundleAllowMixedLocalizations": true,
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "plugins": [
