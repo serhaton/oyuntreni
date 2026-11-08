@@ -75,6 +75,12 @@ interface ProgressContextValue {
    * the trip train is emptied. Returns who rode along and what's new.
    */
   takeTrip: (currentLanguage: LanguageCode) => TripResult;
+  /**
+   * Call when the trip train may be full. Returns true if it is full AND brings
+   * at least one new sticker (time to celebrate). A full train without anything
+   * new is emptied quietly and false is returned (no celebration).
+   */
+  settleFullTrip: (currentLanguage: LanguageCode) => boolean;
   /** Forget all progress (parents' settings, stage 11). */
   reset: () => void;
 }
@@ -151,6 +157,19 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     [update],
   );
 
+  const settleFullTrip = useCallback(
+    (currentLanguage: LanguageCode): boolean => {
+      const prev = latest.current;
+      if (prev.trip.length < TRIP_SIZE) return false;
+      const bringsNew = prev.trip.some(
+        (p) => p.kind === 'catalog' && !(prev.stickers[p.language ?? currentLanguage] ?? []).includes(p.id),
+      );
+      if (!bringsNew) update({ ...prev, trip: [] });
+      return bringsNew;
+    },
+    [update],
+  );
+
   const reset = useCallback(() => {
     latest.current = EMPTY_PROGRESS;
     setData(EMPTY_PROGRESS);
@@ -166,9 +185,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       addToTrip,
       isTripFull,
       takeTrip,
+      settleFullTrip,
       reset,
     }),
-    [ready, data, markCompleted, addToTrip, isTripFull, takeTrip, reset],
+    [ready, data, markCompleted, addToTrip, isTripFull, takeTrip, settleFullTrip, reset],
   );
 
   return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>;

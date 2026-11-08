@@ -25,7 +25,7 @@ export default function StationScreen() {
   const { language } = useTranslation();
   const { safe } = useDeviceLayout();
   const station = id ? getStationById(language, id) : undefined;
-  const { markCompleted, isCompleted, addToTrip, isTripFull } = useProgress();
+  const { markCompleted, isCompleted, addToTrip, settleFullTrip } = useProgress();
   const { isPremium } = usePremium();
   // Safety net: a locked station reached any other way goes to the "ask a grown-up" screen.
   const locked = station ? !canPlay(station, language, isPremium) : false;
@@ -54,10 +54,10 @@ export default function StationScreen() {
     [guard],
   );
 
-  // When a station is finished: a full trip train means a big celebration
-  // first; otherwise back to the list, or on to the next question.
+  // When a station is finished: a full trip train with a new sticker means a
+  // big celebration first; otherwise back to the list, or on to the next question.
   const onDone = useCallback(() => {
-    if (isTripFull()) {
+    if (settleFullTrip(language)) {
       guard(() => router.replace('/celebration'));
       return;
     }
@@ -71,7 +71,7 @@ export default function StationScreen() {
       return;
     }
     guard(() => router.replace({ pathname: '/station/[id]', params: { id: next.id } }));
-  }, [direct, station, language, isCompleted, isTripFull, leave, guard]);
+  }, [direct, station, language, isCompleted, settleFullTrip, leave, guard]);
 
   return (
     <View style={styles.root}>
