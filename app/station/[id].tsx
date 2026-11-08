@@ -39,7 +39,7 @@ export default function StationScreen() {
   const onSolved = useCallback(() => {
     if (!station) return;
     markCompleted(language, station.id);
-    addToTrip(stationPassenger(station));
+    addToTrip({ ...stationPassenger(station), language });
   }, [station, language, markCompleted, addToTrip]);
 
   // The station ending and the back button share one lock, so leaving can

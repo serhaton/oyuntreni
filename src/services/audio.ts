@@ -39,6 +39,15 @@ const SPEECH = { rate: 0.85, pitch: 1.1 } as const;
 
 const DUCK_FADE_MS = 250;
 
+/**
+ * By default expo-audio deactivates the iOS audio session ~100 ms after a
+ * sound finishes when nothing else is playing. Speech shares that session, so
+ * a short effect ending mid-sentence ("pop" just before "Cat is on the
+ * train!") cut the sentence off on real devices. Our players keep the session
+ * active instead (we mix with other apps, so this doesn't disturb them).
+ */
+const PLAYER_OPTIONS = { keepAudioSessionActive: true } as const;
+
 // ---------------------------------------------------------------------------
 // Voice providers (TTS now; recorded clips when available)
 // ---------------------------------------------------------------------------
@@ -53,7 +62,7 @@ interface VoiceProvider {
  * engine never reports "done" (it can happen), we still continue and un-duck
  * the music instead of waiting forever.
  */
-const maxSpeechMs = (text: string) => 2500 + text.length * 120;
+const maxSpeechMs = (text: string) => 1000 + text.length * 120;
 
 const ttsVoice: VoiceProvider = {
   async speak(text, language) {
@@ -100,7 +109,7 @@ const clipVoice: VoiceProvider = {
   async speak(_text, language, clipId) {
     const source = clipId ? VOICE_CLIPS[language]?.[clipId] : undefined;
     if (source == null) return;
-    clipPlayer ??= createAudioPlayer(null);
+    clipPlayer ??= createAudioPlayer(null, PLAYER_OPTIONS);
     const player = clipPlayer;
     player.replace(source);
     await new Promise<void>((resolve) => {
@@ -169,11 +178,19 @@ let music: AudioPlayer | null = null;
 let musicWanted = false;
 
 function newSfxPlayer(id: SoundId): AudioPlayer {
-  const player = createAudioPlayer(SOUND_ASSETS[id]);
+  const player = createAudioPlayer(SOUND_ASSETS[id], PLAYER_OPTIONS);
+  // Rewind as soon as a sound ends, so the next play() starts instantly.
+  // (Rewinding at play time is async and delays the start; a sound that then
+  // begins after a sentence has started cuts the speech off on iOS.)
+  player.addListener('playbackStatusUpdate', (status: AudioStatus) => {
+    if (status.didJustFinish) player.seekTo(0).catch(() => {});
+  });
   live.sfx.push(player);
   return player;
 }
 let speechToken = 0;
+/** The sentence being spoken right now (null when silent). */
+let speaking: Promise<void> | null = null;
 let fadeTimer: ReturnType<typeof setInterval> | null = null;
 
 function getSfxPlayer(id: SoundId): AudioPlayer {
@@ -222,6 +239,12 @@ function onAppStateChange(state: AppStateStatus) {
 // Public API
 // ---------------------------------------------------------------------------
 
+/** Length of a sound in ms (once loaded; a typical length until then). */
+function soundDurationMs(id: SoundId): number {
+  const seconds = getSfxPlayer(id).duration;
+  return Number.isFinite(seconds) && seconds > 0 ? seconds * 1000 : 1500;
+}
+
 /** Plays a sound from the start (dropping repeats within SFX_MIN_GAP_MS). */
 function playSound(id: SoundId) {
   const now = Date.now();
@@ -231,9 +254,9 @@ function playSound(id: SoundId) {
     const player = getSfxPlayer(id);
     player.volume = VOLUME.sfx;
     if (player.currentTime > 0) {
-      // Played before: rewind FIRST. seekTo is async; calling play() right
-      // away on a finished player plays from the end (silence), and the
-      // sound would only work on every second tap.
+      // Not rewound yet (e.g. the same sound again while it was still
+      // playing): rewind FIRST. seekTo is async; calling play() right away on
+      // a finished player plays from the end (silence).
       player
         .seekTo(0)
         .then(() => player.play())
@@ -276,9 +299,11 @@ export const audio = {
   /**
    * Play a sound that IS the question (e.g. "which animal makes this sound?").
    * It plays even with effects turned off — otherwise the quiz can't be played.
+   * Returns the sound's length in ms.
    */
-  playQuestionSound(id: SoundId) {
+  playQuestionSound(id: SoundId): number {
     playSound(id);
+    return soundDurationMs(id);
   },
 
   setSfxEnabled(enabled: boolean) {
@@ -290,7 +315,7 @@ export const audio = {
     musicWanted = true;
     if (!musicEnabled) return;
     if (!music) {
-      music = createAudioPlayer(MUSIC_ASSETS.theme);
+      music = createAudioPlayer(MUSIC_ASSETS.theme, PLAYER_OPTIONS);
       music.loop = true;
       music.volume = VOLUME.music;
       live.music = music;
@@ -330,13 +355,25 @@ export const audio = {
     ttsVoice.stop();
     clipVoice.stop();
     if (musicEnabled) fadeMusicTo(VOLUME.musicDucked);
+    const provider = hasClip(lang, options.clipId) ? clipVoice : ttsVoice;
+    const current = provider.speak(text, lang, options.clipId);
+    speaking = current;
     try {
-      const provider = hasClip(lang, options.clipId) ? clipVoice : ttsVoice;
-      await provider.speak(text, lang, options.clipId);
+      await current;
     } finally {
+      if (speaking === current) speaking = null;
       // Only the latest sentence restores the music (an interrupted one must not).
       if (token === speechToken && musicEnabled) fadeMusicTo(VOLUME.music);
     }
+  },
+
+  /**
+   * Resolves when the current sentence has finished (at most `maxMs` later), so
+   * a sound can follow it instead of cutting it off.
+   */
+  async waitForSpeech(maxMs = 3000) {
+    if (!speaking) return;
+    await Promise.race([speaking, new Promise<void>((resolve) => setTimeout(resolve, maxMs))]);
   },
 
   stopSpeech() {

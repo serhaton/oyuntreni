@@ -7,6 +7,7 @@ import { Bouncy } from '@/components/Bouncy';
 import { ParallaxBackground } from '@/components/ParallaxBackground';
 import { Sprite } from '@/components/Sprite';
 import { CATALOG, CATALOG_IDS, type CatalogId, type CatalogKind } from '@/data/catalog';
+import { collectibleStickers } from '@/data/stations';
 import { useDeviceLayout } from '@/hooks/useDeviceLayout';
 import { useSay } from '@/hooks/useSay';
 import { useTranslation } from '@/i18n';
@@ -23,14 +24,15 @@ const TABS: { kind: CatalogKind; icon: CatalogId; color: keyof typeof colors }[]
 
 /**
  * Sticker album: every character the child has taken on a full trip train.
+ * Each language has its own album, filled by that language's stations.
  * Collected stickers make their sound, hop and say their name when tapped;
  * the rest wait as "?" spots to discover.
  */
 export default function AlbumScreen() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const say = useSay();
   const { safe, s, touchTarget, width: W } = useDeviceLayout();
-  const { stickers } = useProgress();
+  const { stickersFor } = useProgress();
   const [tab, setTab] = useState<CatalogKind>('animal');
 
   useEffect(() => {
@@ -38,7 +40,14 @@ export default function AlbumScreen() {
     return () => clearTimeout(timer);
   }, [say]);
 
-  const items = CATALOG_IDS.filter((id) => CATALOG[id].kind === tab);
+  // Each language has its own album: the stickers won in this language, out of
+  // those that can be earned in it (finishing every station fills it completely).
+  const stickers = stickersFor(language);
+  const collectible = collectibleStickers(language);
+  const inAlbum = (id: CatalogId) => collectible.has(id);
+  const tabs = TABS.filter((tb) => CATALOG_IDS.some((id) => CATALOG[id].kind === tb.kind && inAlbum(id)));
+  const current = tabs.some((tb) => tb.kind === tab) ? tab : (tabs[0]?.kind ?? 'animal');
+  const items = CATALOG_IDS.filter((id) => CATALOG[id].kind === current && inAlbum(id));
   const owned = items.filter((id) => stickers.includes(id)).length;
 
   // Grid: as many columns as fit, every slot comfortably tappable.
@@ -59,8 +68,8 @@ export default function AlbumScreen() {
 
       {/* Tabs: one big round button per album page */}
       <View style={[styles.tabs, { top: safe.top, gap: s(18) }]} pointerEvents="box-none">
-        {TABS.map((tb) => {
-          const selected = tb.kind === tab;
+        {tabs.map((tb) => {
+          const selected = tb.kind === current;
           return (
             <Bouncy key={tb.kind} onPress={() => chooseTab(tb.kind)} accessibilityLabel={t(`albumTabs.${tb.kind}`)}>
               <View
@@ -103,7 +112,7 @@ export default function AlbumScreen() {
           const has = stickers.includes(id);
           return (
             <Animated.View
-              key={`${tab}-${id}`}
+              key={`${current}-${id}`}
               entering={ZoomIn.delay(Math.min(i, 15) * 35).springify()}
               style={{ width: (gridWidth - gap * (columns - 1)) / columns, alignItems: 'center' }}
             >

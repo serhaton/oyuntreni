@@ -55,6 +55,19 @@ export function getStationById(language: LanguageCode, id: string): StationDef |
   return getStations(language).find((s) => s.id === id);
 }
 
+/**
+ * Album stickers that can be earned in this language: the catalog passenger of
+ * every station (letter friends differ per language, e.g. only English has Lion).
+ */
+export function collectibleStickers(language: LanguageCode): Set<CatalogId> {
+  const ids = new Set<CatalogId>();
+  for (const station of getStations(language)) {
+    const passenger = stationPassenger(station);
+    if (passenger.kind === 'catalog') ids.add(passenger.id);
+  }
+  return ids;
+}
+
 /** Text shown on a station marker (e.g. 'K', 'k' or '3'); null when it shows a picture. */
 export function stationLabel(station: StationDef): string | null {
   switch (station.type) {

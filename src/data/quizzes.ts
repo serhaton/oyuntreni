@@ -43,6 +43,9 @@ export const VEHICLE_QUIZ: VehicleQuestion[] = [
   { kind: 'color', vehicle: 'car', color: 'blue' },
 ];
 
+/** Pause before a quiz sound plays a second time (after it has finished). */
+export const QUESTION_REPEAT_GAP_MS = 2000;
+
 /** Vehicles that can appear as distractors in sound questions (each has a distinct sound). */
 export const VEHICLE_SOUND_POOL: CatalogId[] = ['fireTruck', 'airplane', 'ferry', 'car'];
 

@@ -3,17 +3,18 @@ import { Stack } from 'expo-router';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AudioBridge } from '@/components/AudioBridge';
+import { IntroSplash } from '@/components/IntroSplash';
 import { LanguageProvider, useLanguage } from '@/i18n';
 import { PremiumProvider, usePremium } from '@/services/PremiumProvider';
-import { ProgressProvider } from '@/services/ProgressProvider';
+import { ProgressProvider, useProgress } from '@/services/ProgressProvider';
 import { fontAssets } from '@/theme';
 
-// Keep the splash visible until fonts and the saved language are ready,
+// Keep the splash visible until fonts, the saved language, purchase state and progress are ready,
 // so the child never sees a flash of wrong font or wrong language.
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -21,7 +22,10 @@ function AppShell({ fontsReady }: { fontsReady: boolean }) {
   const { ready: languageReady } = useLanguage();
   // Wait for the saved purchase too, so a paid game never flashes its locks.
   const { ready: premiumReady } = usePremium();
-  const ready = fontsReady && languageReady && premiumReady;
+  const { ready: progressReady } = useProgress();
+  const ready = fontsReady && languageReady && premiumReady && progressReady;
+  // The animated intro takes over from the native splash on every launch.
+  const [intro, setIntro] = useState(true);
 
   useEffect(() => {
     if (ready) SplashScreen.hideAsync().catch(() => {});
@@ -35,6 +39,7 @@ function AppShell({ fontsReady }: { fontsReady: boolean }) {
       <StatusBar hidden />
       <AudioBridge />
       <Stack screenOptions={{ headerShown: false, animation: 'fade' }} />
+      {intro && <IntroSplash onDone={() => setIntro(false)} />}
     </>
   );
 }

@@ -5,6 +5,7 @@ import { useSharedValue, withDelay, withSequence, withTiming } from 'react-nativ
 
 import { AlbumButton } from '@/components/AlbumButton';
 import { BouncyTitle } from '@/components/BouncyTitle';
+import { INTRO_DURATION_MS } from '@/components/IntroSplash';
 import { ParallaxBackground } from '@/components/ParallaxBackground';
 import { PlayButton } from '@/components/PlayButton';
 import { SettingsButton } from '@/components/SettingsButton';
@@ -16,6 +17,7 @@ import { useNavigationLock } from '@/hooks/useNavigationLock';
 import { useFrameClock } from '@/hooks/useFrameClock';
 import { useScreenFocused } from '@/hooks/useScreenFocused';
 import { useSay } from '@/hooks/useSay';
+import { useTripCelebration } from '@/hooks/useTripCelebration';
 import { useTranslation } from '@/i18n';
 import { audio } from '@/services/audio';
 import { colors } from '@/theme';
@@ -43,13 +45,16 @@ export default function WelcomeScreen() {
 
   // A fast double tap on Play must open the map only once.
   const guard = useNavigationLock();
+  // A full trip train (e.g. a station left early) still gets its celebration.
+  useTripCelebration();
 
   // Greet the child once per app launch ("Hello! Let's ride the train!").
   const say = useSay();
   useEffect(() => {
     if (greeted) return;
     greeted = true;
-    const timer = setTimeout(() => void say('speech.welcome'), 700);
+    // After the opening intro has finished.
+    const timer = setTimeout(() => void say('speech.welcome'), INTRO_DURATION_MS + 500);
     return () => clearTimeout(timer);
   }, [say]);
 

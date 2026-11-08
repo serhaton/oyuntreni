@@ -10,6 +10,7 @@ import { CATEGORIES, type CategoryDef } from '@/data/categories';
 import { getStationsOfType, pickNextStation } from '@/data/stations';
 import { useDeviceLayout } from '@/hooks/useDeviceLayout';
 import { useNavigationLock } from '@/hooks/useNavigationLock';
+import { useTripCelebration } from '@/hooks/useTripCelebration';
 import { useTranslation, type TranslationKey } from '@/i18n';
 import { audio } from '@/services/audio';
 import { usePremium } from '@/services/PremiumProvider';
@@ -25,6 +26,8 @@ export default function CategoryMenuScreen() {
   const { isCompleted } = useProgress();
   const { isPremium } = usePremium();
   const guard = useNavigationLock();
+  // A full trip train (e.g. a station left early) still gets its celebration.
+  useTripCelebration();
 
   // Only categories that actually have stations (new types appear automatically).
   const categories = CATEGORIES.map((category) => {

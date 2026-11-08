@@ -36,8 +36,12 @@ interface ChoiceStationProps {
   options: ChoiceOption[];
   /** Index of the right card in `options`. */
   answer: number;
-  /** Plays the question (a sound and/or a sentence). Called again by the speaker button. */
-  ask: () => Promise<void>;
+  /**
+   * Plays the question (a sound and/or a sentence). Called again by the speaker
+   * button. `isCurrent()` turns false once the child answers, asks again or
+   * leaves, so a delayed repeat can be skipped.
+   */
+  ask: (isCurrent: () => boolean) => Promise<void>;
   /**
    * How the right answer joins the train: animals hop into a wagon,
    * vehicles drive up and hook onto the back of the train.
@@ -156,10 +160,14 @@ export function ChoiceStation({ options, answer, ask, boarding, onSolved, onDone
   // After the question has played, the speaker starts dancing to invite the
   // child to listen again. It calms down while the question replays.
   const [inviting, setInviting] = useState(false);
+  // Each ask gets a number; a newer ask, a pick or leaving makes the old one stale.
+  const askId = useRef(0);
   const askAndInvite = useCallback(async () => {
     if (inviteTimer.current) clearTimeout(inviteTimer.current);
     setInviting(false);
-    await ask();
+    const id = ++askId.current;
+    await ask(() => alive.current && askId.current === id);
+    if (askId.current !== id) return;
     inviteTimer.current = setTimeout(() => {
       if (alive.current) setInviting(true);
     }, INVITE_DELAY_MS);
@@ -229,6 +237,7 @@ export function ChoiceStation({ options, answer, ask, boarding, onSolved, onDone
     (index: number) => {
       if (phase !== 'question') return;
       if (replayTimer.current) clearTimeout(replayTimer.current);
+      askId.current++; // a pending repeat of the question is no longer wanted
       if (index === answer) {
         void celebrateAndBoard();
         return;

@@ -54,7 +54,7 @@ const DEMO_TRIP: TripResult = {
  * the train leaves and the new album stickers are revealed one by one.
  */
 export default function CelebrationScreen() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const say = useSay();
   const { width: W, height: H, safe, s } = useDeviceLayout();
   const { takeTrip } = useProgress();
@@ -87,7 +87,7 @@ export default function CelebrationScreen() {
     const run = async () => {
       // Empty the trip train into the album (once), and keep who rode along.
       // Dev only: `/celebration?demo=1` shows sample passengers without touching progress.
-      const trip = __DEV__ && demo === '1' ? DEMO_TRIP : takeTrip();
+      const trip = __DEV__ && demo === '1' ? DEMO_TRIP : takeTrip(language);
       setResult(trip);
       if (trip.passengers.length === 0) {
         router.back();

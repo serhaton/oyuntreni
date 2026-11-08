@@ -6,6 +6,7 @@ import {
   pickOthers,
   QUIZ_COLORS,
   shuffle,
+  QUESTION_REPEAT_GAP_MS,
   VEHICLE_SOUND_POOL,
   type QuizColor,
 } from '@/data/quizzes';
@@ -16,6 +17,8 @@ import { colors } from '@/theme';
 
 import { ChoiceStation, type ChoiceOption } from '../choice/ChoiceStation';
 import type { StationModuleProps, VehicleStationDef } from '../types';
+
+const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 /**
  * Vehicle station, two kinds of questions:
@@ -42,18 +45,26 @@ export function VehicleStation({ station, onSolved, onDone }: StationModuleProps
     };
   });
 
-  const ask = useCallback(async () => {
-    audio.stopSpeech();
-    if (question.kind === 'sound') {
-      // The vehicle's sound IS the question (no spoken sentence).
-      audio.playQuestionSound(catalogSound(question.vehicle));
-    } else {
-      await say('speech.findColored', {
-        color: t(`colorNames.${question.color}` as TranslationKey),
-        vehicle: t(`findObject.${question.vehicle}` as TranslationKey),
-      });
-    }
-  }, [question, say, t]);
+  const ask = useCallback(
+    async (isCurrent: () => boolean) => {
+      if (question.kind === 'sound') {
+        // The vehicle's sound IS the question (no spoken sentence). It plays once
+        // more QUESTION_REPEAT_GAP_MS after it ends.
+        await audio.waitForSpeech(); // let "Vehicles!" finish instead of cutting it off
+        if (!isCurrent()) return;
+        const length = audio.playQuestionSound(catalogSound(question.vehicle));
+        await wait(length + QUESTION_REPEAT_GAP_MS);
+        if (isCurrent()) audio.playQuestionSound(catalogSound(question.vehicle));
+      } else {
+        audio.stopSpeech();
+        await say('speech.findColored', {
+          color: t(`colorNames.${question.color}` as TranslationKey),
+          vehicle: t(`findObject.${question.vehicle}` as TranslationKey),
+        });
+      }
+    },
+    [question, say, t],
+  );
 
   return (
     <ChoiceStation options={options} answer={answer} ask={ask} boarding="wagon" onSolved={onSolved} onDone={onDone} />

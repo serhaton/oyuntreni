@@ -24,6 +24,7 @@ import { canPlay } from '@/data/access';
 import { getStationsOfType, stationIcon, stationLabel } from '@/data/stations';
 import { useDeviceLayout } from '@/hooks/useDeviceLayout';
 import { useNavigationLock } from '@/hooks/useNavigationLock';
+import { useTripCelebration } from '@/hooks/useTripCelebration';
 import { useTranslation } from '@/i18n';
 import { audio } from '@/services/audio';
 import { usePremium } from '@/services/PremiumProvider';
@@ -57,6 +58,8 @@ export default function CategoryMapScreen() {
   const { isCompleted } = useProgress();
   // Fast double taps must not open two stations on top of each other.
   const guard = useNavigationLock();
+  // A full trip train (e.g. a station left early) still gets its celebration.
+  useTripCelebration();
 
   // The next station to do: the first one not completed yet (or the last one).
   const { isPremium } = usePremium();
