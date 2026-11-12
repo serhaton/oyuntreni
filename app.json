@@ -14,7 +14,7 @@
       "supportsTablet": true,
       "requireFullScreen": true,
       "bundleIdentifier": "com.oyuntreni.app",
-      "buildNumber": "1",
+      "buildNumber": "2",
       "appleTeamId": "UL2V6DD422",
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
@@ -27,7 +27,8 @@
       [
         "expo-audio",
         {
-          "microphonePermission": false
+          "microphonePermission": false,
+          "enableBackgroundPlayback": false
         }
       ],
       [
